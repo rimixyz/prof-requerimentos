@@ -1771,10 +1771,21 @@ Leia as documentações que regem a companhia [url=https://sites.google.com/view
         })(jQuery);
 
         $(document).ready(function () {
+            const attlistTagInput = document.getElementById('attlist_tag');
+            if (attlistTagInput) {
+                attlistTagInput.maxLength = 3;
+                attlistTagInput.minLength = 3;
+                attlistTagInput.addEventListener('input', function () {
+                    const characters = Array.from(this.value);
+                    if (characters.length > 3) this.value = characters.slice(0, 3).join('');
+                });
+            }
+
             $("#attlist_postagem").submit(function (e) {
                 e.preventDefault(); const $submitButton = $(this).find('button[type="submit"]'); $submitButton.prop('disabled', true).addClass('loading');
                 const attlist_tag_value = $("#attlist_tag").val().trim();
                 if (attlist_tag_value === "") { showCustomModal("Atenção!", "Preencha o campo TAG!", { icon: 'warning' }); $("#attlist_tag").addClass('invalid'); $submitButton.prop('disabled', false).removeClass('loading'); return; }
+                if (Array.from(attlist_tag_value).length !== 3) { showCustomModal("Atenção!", "A TAG deve conter exatamente 3 caracteres.", { icon: 'warning' }); $("#attlist_tag").addClass('invalid'); $submitButton.prop('disabled', false).removeClass('loading'); return; }
                 $("#attlist_tag").removeClass('invalid');
                 const texto = `[table class="rank attprof" style="border: none!important; margin: 1em; line-height: 1.4em;"][tr style="border: none;"][td style="border: none!important;"][img]https://i.imgur.com/1nRwKhI.gif[/img]\n[font=Poppins][size=15][color=white][b][PROF] ATUALIZADO [${attlist_tag_value}][/b][/color][/size][color=white]\nEm virtude do Conselho da Documentação, foi realizada uma atualização neste horário. \nEm caso de erros consulte um conselheiro+ da companhia dos Professores.\n\n[b]#SoberaniaROXA[/b][/color][/font][/td][/tr][/table]`;
                 queueAppsScriptSubmission(this, {
