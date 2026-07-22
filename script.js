@@ -736,7 +736,24 @@ Leia as documentações que regem a companhia [url=https://sites.google.com/view
             return `${Date.now()}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
         }
 
+        const FIELD_LABEL_OVERRIDES = {
+            nick_ent: 'Nickname',
+            TAG_ex: 'Nickname',
+            nick_pro: 'Nickname',
+            nick_reb: 'Nickname',
+            nick_sai: 'Nickname',
+            nick_mig: 'Nickname',
+            nick_reint: 'Nickname',
+            nick_conselho: 'Nickname',
+            nick_lic: 'Nickname',
+            nick_licpro: 'Nickname',
+            nick_retlic: 'Nickname',
+            nick_atual_transf: 'Nickname atual',
+            nick_novo_transf: 'Novo nickname'
+        };
+
         function getFieldLabel(field) {
+            if (FIELD_LABEL_OVERRIDES[field.name]) return FIELD_LABEL_OVERRIDES[field.name];
             if (field.id) {
                 const explicitLabel = Array.from(document.querySelectorAll('label')).find(label => label.htmlFor === field.id);
                 if (explicitLabel) return explicitLabel.innerText.replace(/\s+/g, ' ').trim();
@@ -1327,8 +1344,7 @@ Leia as documentações que regem a companhia [url=https://sites.google.com/view
             const inputs = activeFormGlobal.querySelectorAll("input:not([type=hidden]):not(#fa-generated-message):not([data-private-message-only]):not([data-form-helper]), select:not([data-private-message-only]), textarea:not([data-private-message-only])"); let placeholdersData = "";
             inputs.forEach((input) => {
                 if (input.type !== "checkbox") {
-                    let placeholder = input.getAttribute("placeholder") || (input.tagName.toLowerCase() === "select" && input.options.length > 0 && input.options[0].disabled ? input.options[0].innerText : input.name);
-                    if (input.name === 'nick_pro' || input.name === 'nick_reb') placeholder = 'Nickname';
+                    let placeholder = FIELD_LABEL_OVERRIDES[input.name] || input.getAttribute("placeholder") || (input.tagName.toLowerCase() === "select" && input.options.length > 0 && input.options[0].disabled ? input.options[0].innerText : input.name);
                     const value = input.value ? input.value.trim() : "";
                     if (value || input.type === "date") {
                         let formattedValue = value;
@@ -1340,7 +1356,7 @@ Leia as documentações que regem a companhia [url=https://sites.google.com/view
                                 formattedValue = document.getElementById('expulsion_custom_reason')?.value.trim() || 'Outro';
                             }
                         }
-                        const isTagField = placeholder.toLowerCase() === "tag" || input.name === "TAG_ex";
+                        const isTagField = placeholder.toLowerCase() === "tag";
                         if (isTagField && formId === "form12") { placeholdersData += `${formattedValue}`; } else if (isTagField) {
                             const lines = formattedValue.split("/").map(s => s.trim()).filter(s => s);
                             lines.forEach(l => { placeholdersData += `[font=Poppins][b][color=#000000]${l}[/color][/b][/font]\n`; });
